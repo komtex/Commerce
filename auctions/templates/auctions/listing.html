@@ -1,0 +1,121 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}
+{% if listing is None %}
+Listing not found - auctions
+{% elif listing.active == '1' %}
+Listing not active auctions
+{% else %}
+{{ listing.title }} Listing - Auctions
+{% endif %}
+{% endblock %}
+
+{% block content %}
+{% if listing is None %}
+   <h2>Listing does not exist.</h2>
+ {% elif listing.active == '1' %}
+   {% if user.is_authenticated %}
+     {% if listing.get_highest_bidder is not None and listing.get_highest_bidder == user %}
+       <div class="alert alert-success">
+         <strong>You won the auction!</strong>
+           </div>
+     {% endif %}
+   {% endif %}
+   <h2>{{ listing.title }}</h2>
+   <p>This listing is no longer active.</p>
+ {% else %}
+   <h2>{{ listing.title }}</h2>
+<h3>{{ listing.id }} Listing {{ listing.title }}</h3>
+
+{% if listing.image != "" %}
+<img src="{{ listing.image.url }}" alt="Image of {{ listing.title }}" style="width: 300px; height: auto; padding: 0.5em">
+    {% endif %}
+
+    {% if listing.description is not None %}
+        <p>{{ listing.description }}</p>
+      {% endif %}
+
+  <h3>${{ listing.get_price }}</h3>
+   <p>{{ listing.bids.count }} bid(s) so far.</p>
+   {% if user.is_authenticated %}
+        {% if listing.get_highest_bidder is not None and listing.get_highest_bidder == user %}
+          <p>Your bid is the current bid.</p>
+        {% endif %}
+
+        <form action="{% url 'listing' listing.pk %}" method="post">
+          {% csrf_token %}
+
+          {% for field in bid_form %}
+            <div class="form-group">
+              {{ field }}
+            </div>
+          {% endfor %}
+
+          {% if bid_form.errors %}
+            {% for field in bid_form %}
+              {% for error in field.errors %}
+                <div class="alert alert-danger">
+                  {{ error }}
+                </div>
+              {% endfor %}
+            {% endfor %}
+          {% endif %}
+
+          <input type="submit" name="new-bid" value="Place Bid">
+        </form>
+        {% endif %}
+        <hr>
+        <h3>Details</h3>
+
+        <ul>
+      <li>Listed by: <a href="{% url 'profile' listing.user %}">{{ listing.user.username }}</a></li>
+      <li>Category: {{ listing.get_category_display }}</li>
+      <li>Created: {{ listing.time_create }}</li>
+    </ul>
+
+    {% if is_my_listing %}
+      <!-- button for closing the listing -->
+      <form style="display: inline;" action="{% url 'listing' listing.pk %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="submit" name="close-listing" value="Close Listing">
+      </form>
+    {% endif %}
+
+      {% if user.is_authenticated %}
+       <form style="display: inline;" action="{% url 'listing' listing.pk %}" method="post" enctype="multipart/form-data">
+         {% csrf_token %}
+         {% if my_watchlist %}
+           <input type="submit" name="remove-watchlist" value="Remove From My Watchlist">
+         {% else %}
+           <input type="submit" name="add-watchlist" value="Add to My Watchlist">
+         {% endif %}
+       </form>
+       {% endif %}
+       <hr>
+       <h3>Comments</h3>
+       {% if user.is_authenticated %}
+         <form class="mt-2 mb-4" action="{% url 'listing' listing.pk %}" method="post" enctype="multipart/form-data">
+           {% csrf_token %}
+           {% for field in comment_form %}
+             <div class="form-group">
+               {{ field }}
+             </div>
+           {% endfor %}
+           <input type="submit" name="post-comment" value="Post">
+         </form>
+         {% if comment_form.errors %}
+                 {% for field in comment_form %}
+                   {% for error in field.errors %}
+                     <p> {{ error }} </p>
+                   {% endfor %}
+                 {% endfor %}
+               {% endif %}
+             {% endif %}
+          {% for comment in comments %}
+            <strong>{{ comment.user.username }}</strong> commented: {{ comment.time_post }}<br>
+            {{ comment.content }}<br><br>
+          {% endfor %}
+
+       {% endif %}
+
+{% endblock %}

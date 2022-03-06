@@ -1,0 +1,51 @@
+body {
+    padding: 10px;
+}
+nav {
+  margin-bottom: 1.0rem;
+}
+nav {
+  position: relative;
+  margin: 2px;
+  top: 1rem;
+  background: #ebd4d4;
+  padding: .5rem;
+}
+ nav a:hover {
+  color: #5c9f7f !important;
+}
+
+nav a {
+  color: #e6dddd;
+  padding: 0.5em;
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-shadow: 5px 5px 4px rgba(0, 0, 0, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 5px;
+}
+
+.navbar-nav .nav-item:not(:last-child) {
+  border-right: 2px solid rgba(32, 133, 7, 0.4);
+}
+.mr-auto {
+  font-size: 150%;
+  font-weight: 500;
+}
+
+  @media (max-width: 768px) {
+    .navbar-nav .nav-item:not(:last-child) {
+      border-right: none;
+    }
+  }
+
+  .cover {
+    object-fit: cover;
+  }
+
+  .cover {
+    color: #54b7e6;
+    margin-right: 0;
+    /*-webkit-box-shadow: 5px 10px 10px 10px #d5ded6;*/
+    /*box-shadow: 5px 10px 10px 10px #bac1bb;*/
+  }

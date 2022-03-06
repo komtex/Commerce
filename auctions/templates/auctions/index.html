@@ -1,0 +1,67 @@
+{% extends "auctions/layout.html" %}
+{% block title %}
+    Auctions-active
+{% endblock %}
+
+{% block content %}
+    <div class="mt-4">
+
+      {% for item in listings %}
+      <h2>Active Listings</h2>
+        <div class="card mb-3" style="max-width: 760px;">
+          {% if deleted %}
+          <div class="alert alert-success">
+            {{ deleted }}
+          </div>
+          {% endif %}
+          <div class="row no-gutters">
+            {% if item.image != "" %}
+              <div class="col-md-4">
+                <img src="{{ item.image.url }}" alt="image" style="width: 200px; height: auto; padding: 0.5em">
+              <!--  <a href="{{ item.image.url }}" target="_blank">Image of {{ item.title }}<a/>-->
+              </div>
+            {% endif %}
+            <div class="col-md-8">
+              <div class="card-body">
+                <h5 class="card-title"><a href="{% url 'listing' item.pk %}">{{ item.title }}</a></h5>
+                <p class="card-text">Price: {{ item.get_price }}</p>
+                <p class="card-text">{{ item.description }}</p>
+                <p class="card-text"><small class="text-muted">Created: {{ item.time_create }}</small></p>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+      {% endfor %}
+
+      {% for item in stopped %}
+        <h2>Closed Listings</h2>
+      <div class="card mb-3" style="max-width: 760px;">
+        {% if deleted %}
+        <div class="alert alert-success">
+          {{ deleted }}
+        </div>
+        {% endif %}
+        <div class="row no-gutters">
+          {% if item.image != "" %}
+            <div class="col-md-4">
+              <img src="{{ item.image.url }}" alt="image of" style="width: 100px; height: auto">
+              <!-- <a href="{{ item.image.url }}" target="_blank">Image of {{ item.title }}<a/> -->
+            </div>
+            {% endif %}
+          <div class="col-md-8">
+            <div class="card-body">
+              <h5 class="card-title"><a href="{% url 'listing' item.pk %}">{{ item.title }}</a></h5>
+              <p class="card-text">Price: {{ item.get_price }}</p>
+              <p class="card-text">{{ item.description }}</p>
+              <p class="card-text"><small class="text-muted">Created: {{ item.time_create }}</small></p>
+<a href="delete/{{ item.pk }}"><button class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this record!?')">Delete</button></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+{% endblock %}
